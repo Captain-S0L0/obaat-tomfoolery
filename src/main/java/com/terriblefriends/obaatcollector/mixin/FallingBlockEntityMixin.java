@@ -28,21 +28,22 @@ public abstract class FallingBlockEntityMixin extends Entity {
 
     @Inject(method="tick",at=@At("HEAD"))
     private void tickInject(CallbackInfo ci) {
-        boolean glowing = false;
-        Item item = class_7323.method_42881(FBE_instance.getBlockState());
-        if (ObaatCollector.desireableItems.contains(item) || item instanceof SpawnEggItem || ObaatCollector.desireableBlocks.contains(FBE_instance.getBlockState().getBlock())) {
-            glowing = true;
-            if (!FBE_instance.isGlowing()) {
-                String name = "";
-                if (item != null) {
-                    name = item.getTranslationKey();
+        if (FBE_instance.world.isClient()) {
+            boolean glowing = false;
+            Item item = class_7323.method_42881(FBE_instance.getBlockState());
+            if (ObaatCollector.desireableItems.contains(item) || item instanceof SpawnEggItem || ObaatCollector.desireableBlocks.contains(FBE_instance.getBlockState().getBlock())) {
+                glowing = true;
+                if (!FBE_instance.isGlowing()) {
+                    String name = "";
+                    if (item != null) {
+                        name = item.getTranslationKey();
+                    } else if (FBE_instance.getBlockState().getBlock() != null) {
+                        name = FBE_instance.getBlockState().getBlock().getTranslationKey();
+                    }
+                    MinecraftClient.getInstance().inGameHud.addChatMessage(MessageType.SYSTEM, Text.of("Desireable found! " + name), UUID.randomUUID());
                 }
-                else if (FBE_instance.getBlockState().getBlock() != null) {
-                    name = FBE_instance.getBlockState().getBlock().getTranslationKey();
-                }
-                MinecraftClient.getInstance().inGameHud.addChatMessage(MessageType.SYSTEM, Text.of("Desireable found! "+name), UUID.randomUUID());
             }
+            FBE_instance.setGlowing(glowing);
         }
-        FBE_instance.setGlowing(glowing);
     }
 }

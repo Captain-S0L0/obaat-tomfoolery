@@ -25,23 +25,24 @@ public abstract class EndermanEntityMixin extends HostileEntity {
 
     public void tick() {
         super.tick();
-        boolean glowing = false;
-        if (EE_instance.method_42800() != null) {
-            Item item = class_7323.method_42881(EE_instance.method_42800());
-            if (ObaatCollector.desireableItems.contains(item) || item instanceof SpawnEggItem || ObaatCollector.desireableBlocks.contains(EE_instance.method_42800().getBlock())) {
-                glowing = true;
-                if (!EE_instance.isGlowing()) {
-                    String name = "";
-                    if (item != null) {
-                        name = item.getTranslationKey();
+        if (EE_instance.world.isClient()) {
+            boolean glowing = false;
+            if (EE_instance.method_42800() != null) {
+                Item item = class_7323.method_42881(EE_instance.method_42800());
+                if (ObaatCollector.desireableItems.contains(item) || item instanceof SpawnEggItem || ObaatCollector.desireableBlocks.contains(EE_instance.method_42800().getBlock())) {
+                    glowing = true;
+                    if (!EE_instance.isGlowing()) {
+                        String name = "";
+                        if (item != null) {
+                            name = item.getTranslationKey();
+                        } else if (EE_instance.method_42800().getBlock() != null) {
+                            name = EE_instance.method_42800().getBlock().getTranslationKey();
+                        }
+                        MinecraftClient.getInstance().inGameHud.addChatMessage(MessageType.SYSTEM, Text.of("Desireable found! " + name), UUID.randomUUID());
                     }
-                    else if (EE_instance.method_42800().getBlock() != null) {
-                        name = EE_instance.method_42800().getBlock().getTranslationKey();
-                    }
-                    MinecraftClient.getInstance().inGameHud.addChatMessage(MessageType.SYSTEM, Text.of("Desireable found! "+name), UUID.randomUUID());
                 }
             }
+            EE_instance.setGlowing(glowing);
         }
-        EE_instance.setGlowing(glowing);
     }
 }
